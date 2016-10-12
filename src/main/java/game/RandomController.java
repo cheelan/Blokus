@@ -3,7 +3,6 @@ package game;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class RandomController implements Controller {
 
@@ -14,6 +13,9 @@ public class RandomController implements Controller {
 		System.out.println("Player has " + pieces.size());
 		List<Move> moves = findAllValidMoves(board, pieces);
 		System.out.println(moves.size() + " possible moves");
+		if (moves.size() == 0) {
+			return null;
+		}
 		return moves.get((int) (Math.random() * moves.size()));
 	}
 
