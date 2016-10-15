@@ -1,5 +1,6 @@
 package game;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,11 +34,20 @@ public class PlayerTest {
 	}
 	
 	@Test
-	public void testPlay() {
+	public void playShouldReturnControllersMove() {
 		Board board = mock(Board.class);
-		player.play(board);
 		Move actual = new Move(mock(Piece.class), 0, 0);
 		when(controller.decide(board, pieces.values())).thenReturn(actual);
-		Assert.assertEquals(actual, controller.decide(board, pieces.values()));
+		Assert.assertEquals(actual, player.play(board));
+	}
+	
+	@Test
+	public void movesShouldBeAppendedToHistory() {
+		Board board = mock(Board.class);
+		Move move = new Move(mock(Piece.class), 0, 0);
+		when(controller.decide(board, pieces.values())).thenReturn(move);
+		player.play(board);
+		assertEquals(1, player.getMoveHistory().size());
+		assertEquals(move, player.getMoveHistory().get(0));
 	}
 }
