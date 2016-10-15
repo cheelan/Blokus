@@ -50,4 +50,12 @@ public class PlayerTest {
 		assertEquals(1, player.getMoveHistory().size());
 		assertEquals(move, player.getMoveHistory().get(0));
 	}
+	
+	@Test
+	public void nullMovesShouldNotBeInHistory() {
+		Board board = mock(Board.class);
+		when(controller.decide(board, pieces.values())).thenReturn(null);
+		player.play(board);
+		assertEquals(0, player.getMoveHistory().size());
+	}
 }
