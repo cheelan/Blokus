@@ -11,7 +11,7 @@ public class Board {
 	private int[][] board = new int[ROWS][COLS];
 	private MoveValidator validator;
 	
-	protected Board(MoveValidator validator) {
+	public Board(MoveValidator validator) {
 		this.validator = validator;
 	}
 	
