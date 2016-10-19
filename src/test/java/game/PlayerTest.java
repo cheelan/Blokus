@@ -58,4 +58,24 @@ public class PlayerTest {
 		player.play(board);
 		assertEquals(0, player.getMoveHistory().size());
 	}
+	
+	@Test
+	public void copiesShouldInitiallyBeEqual() {
+		Player copy = player.deepCopy();
+		assert(copy.equals(player));
+	}
+	
+	@Test
+	public void copiesShouldHaveNewHistoryInstance() {
+		Player copy = player.deepCopy();
+		copy.getMoveHistory().add(null);
+		assert(!copy.getMoveHistory().equals(player.getMoveHistory()));
+	}
+	
+	@Test
+	public void copiesShouldHaveDifferentPiecesInstance() {
+		Player copy = player.deepCopy();
+		copy.removePiece(Name.F);
+		assert(!copy.getPieces().equals(player.getPieces()));
+	}
 }

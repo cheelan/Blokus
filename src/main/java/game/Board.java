@@ -1,7 +1,9 @@
 package game;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode
 public class Board {
 	
 	public static final int ROWS = 14;
@@ -34,6 +36,19 @@ public class Board {
 	
 	public int getCell(int row, int col) {
 		return board[row][col];
+	}
+	
+	public Board deepCopy() {
+		Board copy = new Board(validator);
+		int[][] newBoard = new int[ROWS][COLS];
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLS; j++) {
+				newBoard[i][j] = board[i][j];
+			}
+		}
+		copy.board = newBoard;
+		copy.moves = moves;
+		return copy;
 	}
 	
 	@Override

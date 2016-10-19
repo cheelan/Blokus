@@ -26,7 +26,7 @@ public class BoardTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void invalidMoves_shouldFail() {
 		when(validator.isMoveValid(eq(board), any(Move.class))).thenReturn(false);
-		board.applyMove(mock(Move.class));
+		board.applyMove(new Move(PieceFactory.createPiece(Name.F, 1), 0, 0));
 	}
 		
 	// Test that applied move modified the state of the board correctly
@@ -42,5 +42,20 @@ public class BoardTest {
 				Assert.assertEquals(shape[i][j], board.getCell(i, j));
 			}
 		}
+	}
+	
+	@Test
+	public void copiesShouldInitiallyBeEqual() {
+		Board copy = board.deepCopy();
+		assert(copy.equals(board));
+	}
+	
+	@Test
+	public void copiesShouldHaveDifferentInstance() {
+		when(validator.isMoveValid(eq(board), any(Move.class))).thenReturn(true);
+		Board copy = board.deepCopy();
+		Move move = new Move(PieceFactory.createPiece(Name.F, 1), 0, 0);
+		copy.applyMove(move);
+		assert(!copy.equals(board));
 	}
 }
