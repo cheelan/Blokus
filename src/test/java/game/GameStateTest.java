@@ -3,6 +3,9 @@ package game;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,13 +16,17 @@ public class GameStateTest {
 	private Board board;
 	private Player player1;
 	private Player player2;
+	private List<Player> players;
 
 	@Before
 	public void init() {
 		board = mock(Board.class);
 		player1 = mock(Player.class);
 		player2 = mock(Player.class);
-		state = new GameState(board, player1, player2);
+		players = new ArrayList<Player>();
+		players.add(player1);
+		players.add(player2);
+		state = new GameState(board, players);
 	}
 	
 	@Test
@@ -34,8 +41,8 @@ public class GameStateTest {
 		
 		GameState copy = state.deepCopy();
 		assert(copy.getBoard() == copiedBoard);
-		assert(copy.getPlayer1() == copiedPlayer1);
-		assert(copy.getPlayer2() == copiedPlayer2);
+		assert(copy.getPlayers().get(1) == copiedPlayer1);
+		assert(copy.getPlayers().get(2) == copiedPlayer2);
 
 	}
 }

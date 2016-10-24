@@ -1,13 +1,29 @@
 package game;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import lombok.Data;
 
 @Data
 public class GameState {
 
 	private final Board board;
-	private final Player player1; // TODO consider putting this in a list to support arbitrary numbers of players
-	private final Player player2;
+	private final Map<Integer, Player> players;
+	
+	public GameState(Board board, List<Player> players) {
+		this.board = board;
+		this.players = new HashMap<Integer, Player>();
+		for (Player p : players) {
+			this.players.put(p.getId(), p);
+		}
+	}
+	
+	private GameState(Board board, Map<Integer, Player> players) {
+		this.board = board;
+		this.players = players;
+	}
 	
 	/**
 	 * Create an equal copy of the state that can be modified without disturbing the original state
@@ -15,6 +31,14 @@ public class GameState {
 	 * @return
 	 */
 	public GameState deepCopy() {
-		return new GameState(board.deepCopy(), player1.deepCopy(), player2.deepCopy());
+		Map<Integer, Player> playersCopy = new HashMap<Integer, Player>();
+		for (Map.Entry<Integer, Player> entry : players.entrySet()) {
+			playersCopy.put(entry.getKey(), entry.getValue().deepCopy());
+		}
+		return new GameState(board.deepCopy(), playersCopy);
+	}
+	
+	public Player getPlayer(int playerId) {
+		return players.get(playerId);
 	}
 }
