@@ -26,8 +26,8 @@ public class Player {
 		pieces.remove(piece);
 	}
 	
-	public Move play(Board board) {
-		Move move = controller.decide(board, pieces.values());
+	public Move play(GameState state) {
+		Move move = controller.decide(state, id);
 		if (move != null) {
 			moveHistory.add(move);
 		}

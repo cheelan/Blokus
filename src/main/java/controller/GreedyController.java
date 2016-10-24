@@ -1,21 +1,19 @@
 package controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import game.Board;
 import game.Controller;
+import game.GameState;
 import game.Move;
-import game.Piece;
 
 public class GreedyController implements Controller {
 	
 	private MoveGenerator moveGenerator = new MoveGenerator();
 
 	@Override
-	public Move decide(Board board, Collection<Piece> pieces) {
-		List<Move> moves = moveGenerator.findAllValidMoves(board, pieces);
+	public Move decide(GameState state, int playerId) {
+		List<Move> moves = moveGenerator.findAllValidMoves(state.getBoard(), state.getPlayer(playerId).getPieces().values());
 		if (moves.size() == 0) {
 			return null;
 		}

@@ -35,27 +35,27 @@ public class PlayerTest {
 	
 	@Test
 	public void playShouldReturnControllersMove() {
-		Board board = mock(Board.class);
+		GameState state = mock(GameState.class);
 		Move actual = new Move(mock(Piece.class), 0, 0);
-		when(controller.decide(board, pieces.values())).thenReturn(actual);
-		Assert.assertEquals(actual, player.play(board));
+		when(controller.decide(state, 1)).thenReturn(actual);
+		Assert.assertEquals(actual, player.play(state));
 	}
 	
 	@Test
 	public void movesShouldBeAppendedToHistory() {
-		Board board = mock(Board.class);
+		GameState state = mock(GameState.class);
 		Move move = new Move(mock(Piece.class), 0, 0);
-		when(controller.decide(board, pieces.values())).thenReturn(move);
-		player.play(board);
+		when(controller.decide(state, 1)).thenReturn(move);
+		player.play(state);
 		assertEquals(1, player.getMoveHistory().size());
 		assertEquals(move, player.getMoveHistory().get(0));
 	}
 	
 	@Test
 	public void nullMovesShouldNotBeInHistory() {
-		Board board = mock(Board.class);
-		when(controller.decide(board, pieces.values())).thenReturn(null);
-		player.play(board);
+		GameState state = mock(GameState.class);
+		when(controller.decide(state, 1)).thenReturn(null);
+		player.play(state);
 		assertEquals(0, player.getMoveHistory().size());
 	}
 	
