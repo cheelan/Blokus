@@ -30,10 +30,11 @@ public class GameState {
 	 * Useful to give to controllers so they can play around with the state
 	 * @return
 	 */
+	// TODO consider instead making apply/undo move methods so that we can perform moves without needing a deep copy
 	public GameState deepCopy() {
 		Map<Integer, Player> playersCopy = new HashMap<Integer, Player>();
 		for (Map.Entry<Integer, Player> entry : players.entrySet()) {
-			playersCopy.put(entry.getKey(), entry.getValue().deepCopy());
+			playersCopy.put(entry.getKey().intValue(), entry.getValue().deepCopy());
 		}
 		return new GameState(board.deepCopy(), playersCopy);
 	}

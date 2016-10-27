@@ -52,6 +52,26 @@ public class MoveValidatorTest {
 		Assert.assertFalse(validator.isMoveValid(board, move));
 	}
 	
+	@Test
+	public void firstMoveMustTouchRow4Col4() {
+		Mockito.when(board.getMoves()).thenReturn(0);
+		Move move = new Move(PieceFactory.createPiece(Name.ONE, 1), 4, 4);
+		Assert.assertTrue(validator.isMoveValid(board, move));
+		
+		Move move2 = new Move(PieceFactory.createPiece(Name.ONE, 1), 5, 4);
+		Assert.assertFalse(validator.isMoveValid(board, move2));
+	}
+	
+	@Test
+	public void secondMoveMustTouchRow10Col10() {
+		Mockito.when(board.getMoves()).thenReturn(1);
+		Move move = new Move(PieceFactory.createPiece(Name.ONE, 1), 10, 10);
+		Assert.assertTrue(validator.isMoveValid(board, move));
+		
+		Move move2 = new Move(PieceFactory.createPiece(Name.ONE, 1), 5, 4);
+		Assert.assertFalse(validator.isMoveValid(board, move2));
+	}
+	
 	@Ignore @Test
 	public void movesNotTouchingSameColorCorner_areInvalid() {
 		

@@ -14,7 +14,8 @@ public class MoveValidator {
 	public boolean isMoveValid(Board board, Move move) {
 		int[][] shape = move.getPiece().getShape();
 		boolean isPieceConnected = false;
-		boolean isPieceOnCorner = false;
+		boolean isPieceOnPlayer1Start = false;
+		boolean isPieceOnPlayer2Start = false;
 		for (int i = 0; i < shape.length; i++) {
 			for (int j = 0; j < shape[0].length; j++) {
 				if (shape[i][j] == 0) {
@@ -67,16 +68,18 @@ public class MoveValidator {
 					}
 				}
 				
-				isPieceOnCorner |= (x == 0 && y == 0) 
-						        || (x == Board.ROWS - 1 && y == 0) 
-						        || (x == 0 && y == Board.COLS - 1) 
-						        || (x == Board.ROWS - 1 && y == Board.COLS - 1);
+				if (x == 4 && y == 4) {
+					isPieceOnPlayer1Start = true;
+				}
+				if (x == Board.ROWS - 4 && y == Board.COLS - 4) {
+					isPieceOnPlayer2Start = true;
+				}
 			}
 		}
 		// The newly placed piece touches at least one corner of the same color 
 		// OR it is the player's first move, in which case it must touch a corner
 		if (board.getMoves() < 2) {
-			return isPieceOnCorner;
+			return isPieceOnPlayer1Start || isPieceOnPlayer2Start;
 		}
 		return isPieceConnected;
 	}
