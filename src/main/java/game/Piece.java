@@ -11,6 +11,8 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class Piece {
 	
+	private static Map<Piece, Set<Piece>> arrangementsCache = new HashMap<Piece, Set<Piece>>();
+	
 	public enum Name {
 		ONE, TWO, V3, I3, O, T4, L4, I4, Z4, F, X, P, W, Z5, Y, V5, T;
 	}
@@ -106,24 +108,27 @@ public class Piece {
 	}
 	
 	public Set<Piece> getArrangements() {
-		Set<Piece> arrangements = new HashSet<Piece>();
-		if (isRotatable) {
-			Piece p = new Piece(value, name, shape, isFlippable, isRotatable);
-			for (int i = 0; i < 4; i++) {
+		if (!arrangementsCache.containsKey(this)) {
+			Set<Piece> arrangements = new HashSet<Piece>();
+			if (isRotatable) {
+				Piece p = new Piece(value, name, shape, isFlippable, isRotatable);
+				for (int i = 0; i < 4; i++) {
+					arrangements.add(p);
+					if (isFlippable) {
+						arrangements.add(p.flip());
+					}
+					p = p.rotate();
+				}
+			} else {
+				Piece p = new Piece(value, name, shape, isFlippable, isRotatable);
 				arrangements.add(p);
 				if (isFlippable) {
 					arrangements.add(p.flip());
 				}
-				p = p.rotate();
 			}
-		} else {
-			Piece p = new Piece(value, name, shape, isFlippable, isRotatable);
-			arrangements.add(p);
-			if (isFlippable) {
-				arrangements.add(p.flip());
-			}
+			arrangementsCache.put(this, arrangements);
 		}
-		return arrangements;
+		return arrangementsCache.get(this);
 	}
 	
 	@Override
