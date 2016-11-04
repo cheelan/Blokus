@@ -29,10 +29,9 @@ public class BoardTest {
 		board.applyMove(new Move(PieceFactory.createPiece(Name.F, 1), 0, 0));
 	}
 		
-	// Test that applied move modified the state of the board correctly
 	@Test
 	public void appliedMoves_shouldAddPieceToBoard() {
-		when(validator.isMoveValid(eq(board), any(Move.class))).thenReturn(true); // TODO when move checker respects first move, this won't be necessary
+		when(validator.isMoveValid(eq(board), any(Move.class))).thenReturn(true);
 
 		Move move = new Move(PieceFactory.createPiece(Name.F, 1), 0, 0);
 		board.applyMove(move);
@@ -40,6 +39,21 @@ public class BoardTest {
 		for (int i = 0; i < shape.length; i++) {
 			for (int j = 0; j < shape[0].length; j++) {
 				Assert.assertEquals(shape[i][j], board.getCell(i, j));
+			}
+		}
+	}
+	
+	@Test
+	public void removeMove_ShouldRemovePieceFromBoard() {
+		when(validator.isMoveValid(eq(board), any(Move.class))).thenReturn(true);
+
+		Move move = new Move(PieceFactory.createPiece(Name.F, 1), 0, 0);
+		board.applyMove(move);
+		board.removeMove(move);
+		int[][] shape = move.getPiece().getShape();
+		for (int i = 0; i < shape.length; i++) {
+			for (int j = 0; j < shape[0].length; j++) {
+				Assert.assertEquals(0, board.getCell(i, j));
 			}
 		}
 	}

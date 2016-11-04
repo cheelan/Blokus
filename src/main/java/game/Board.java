@@ -34,6 +34,20 @@ public class Board {
 		moves += 1;
 	}
 	
+	public void removeMove(Move move) {
+		int x = move.getX();
+		int y = move.getY();
+		for (int i = 0; i < move.getPiece().getShape().length; i++) {
+			for (int j = 0; j < move.getPiece().getShape()[0].length; j++) {
+				int val = move.getPiece().getShape()[i][j];
+				if (val != 0) {
+					board[x+i][y+j] = 0;
+				}
+			}
+		}
+		moves -= 1;
+	}
+	
 	public int getCell(int row, int col) {
 		return board[row][col];
 	}

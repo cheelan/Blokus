@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import game.Piece.PieceFactory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -24,6 +25,10 @@ public class Player {
 	
 	public void removePiece(Piece.Name piece) {
 		pieces.remove(piece);
+	}
+	
+	public void addPiece(Piece.Name piece) {
+		pieces.put(piece, PieceFactory.createPiece(piece, id));
 	}
 	
 	public Move play(GameState state) {

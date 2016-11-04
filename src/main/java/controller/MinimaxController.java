@@ -33,13 +33,13 @@ public class MinimaxController implements Controller {
 		}
 		// As the board gets more crowded, the branching factor goes down, so greater depths are reachable
 		if (state.getPlayer(myPlayerId).getMoveHistory().size() > 5) {
-			minimaxDepth = 4;
-		}
-		else if (state.getPlayer(myPlayerId).getMoveHistory().size() > 7) {
 			minimaxDepth = 5;
 		}
+		else if (state.getPlayer(myPlayerId).getMoveHistory().size() > 7) {
+			minimaxDepth = 9;
+		}
 		else if (state.getPlayer(myPlayerId).getMoveHistory().size() > 8) {
-			minimaxDepth = 6;
+			minimaxDepth = 11;
 		}
 		int nextMoveIndex = state.getPlayer(playerId).getMoveHistory().size();
 		long start = System.currentTimeMillis();
@@ -55,9 +55,7 @@ public class MinimaxController implements Controller {
 		
 	}
 	
-	// TODO investigate a way to reduce state copying by pushing and popping moves instead
-	// TODO cache results to avoid duplicate work
-	private Node minimax(GameState state, int depth, int alpha, int beta, boolean isMaximizer) {
+	public Node minimax(GameState state, int depth, int alpha, int beta, boolean isMaximizer) {
 		if (depth == 0) {
 			int player1Score = scorer.calculateScore(state.getPlayer(myPlayerId).getMoveHistory());
 			int player2Score = scorer.calculateScore(state.getPlayer(opponentPlayerId).getMoveHistory());
@@ -74,25 +72,23 @@ public class MinimaxController implements Controller {
 			Node bestState = new Node(state, bestValue);
 			for (int i = 0; i < moves.size(); i++) {
 				Move move = moves.get(i);
-				// Deep copy the board, moves, and piece list
-				GameState node = state.deepCopy();
-				// Apply the move to the board, remove the piece, append the move
-				node.getBoard().applyMove(move);
-				node.getPlayer(myPlayerId).getMoveHistory().add(move);
-				node.getPlayer(myPlayerId).removePiece(move.getPiece().getName());
-				Node s = minimax(node, depth - 1, alpha, beta, false);
+				state.applyMove(myPlayerId, move);
+
+				Node s = minimax(state, depth - 1, alpha, beta, false);
 				int score = s.getScore();
 				if (score > bestValue) {
 					bestValue = score;
-					bestState = s;
+					// TODO Still making unnecessary deep copies. We could store the best move instead of the best state
+					bestState = new Node(s.getState().deepCopy(), score);
 				}
 				// Randomize ties
 				else if (score == bestValue) {
 					double v = i + 1.0;
 					if (Math.random() < 1.0 / v) {
-						bestState = s;
+						bestState = new Node(s.getState().deepCopy(), score);
 					}
 				}
+				state.undoLastMove(myPlayerId);
 				alpha = Math.max(alpha, score);
 				if (beta <= alpha) {
 					break;
@@ -105,41 +101,41 @@ public class MinimaxController implements Controller {
 			return bestState;
 		} else {
 			List<Move> moves = moveGenerator.findAllValidMoves(state.getBoard(), state.getPlayer(opponentPlayerId).getPieces().values());
-			// Optimization: Alpha beta pruning is more effective when stronger moves are considered first. As a heuristic, it's better to move bigger pieces first
+			// Optimization: Alpha beta pruning is more effective when stronger moves are considered first. 
+			// As a heuristic, it's better to move bigger pieces first
 			Collections.sort(moves, new MoveComparator());
 			int bestValue = Integer.MAX_VALUE;
-			Node bestState = null;
+			Node bestState = new Node(state, bestValue);
 			for (int i = 0; i < moves.size(); i++) {
 				Move move = moves.get(i);
-				// Deep copy the board, moves, and piece list
-				GameState node = state.deepCopy();
-				// Apply the move to the board, remove the piece, append the move
-				node.getBoard().applyMove(move);
-				node.getPlayer(opponentPlayerId).getMoveHistory().add(move);
-				node.getPlayer(opponentPlayerId).removePiece(move.getPiece().getName());
-				Node s = minimax(node, depth - 1, alpha, beta, true);
+				state.applyMove(opponentPlayerId, move);
+
+				Node s = minimax(state, depth - 1, alpha, beta, true);
 				int score = s.getScore();
 				if (score < bestValue) {
 					bestValue = score;
-					bestState = s;
+					bestState = new Node(s.getState().deepCopy(), score);
 				}
 				// Randomize ties
 				else if (score == bestValue) {
 					double v = i + 1.0;
 					if (Math.random() < 1.0 / v) {
-						bestState = s;
+						bestState = new Node(s.getState().deepCopy(), score);
 					}
 				}
+				state.undoLastMove(opponentPlayerId);
 				beta = Math.min(beta, score);
 				if (beta <= alpha) {
 					break;
 				}
 			}
+			// Even though the maximizer has no children, the minimizer may still be able to play moves
 			if (moves.size() == 0) {
 				return minimax(state, depth - 1, alpha, beta, true);
 			}
 			return bestState;
 		}
+		
 	}
 	
 	@Data

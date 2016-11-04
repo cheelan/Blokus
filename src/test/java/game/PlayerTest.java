@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import game.Piece.Name;
+import game.Piece.PieceFactory;
 public class PlayerTest {
 
 	private Player player;
@@ -77,5 +78,11 @@ public class PlayerTest {
 		Player copy = player.deepCopy();
 		copy.removePiece(Name.F);
 		assert(!copy.getPieces().equals(player.getPieces()));
+	}
+	
+	@Test
+	public void addPiece_shouldAddToPlayersInventory() {
+		player.addPiece(Name.ONE);
+		assertEquals(pieces.get(Name.ONE), PieceFactory.createPiece(Name.ONE, 1));
 	}
 }

@@ -30,7 +30,6 @@ public class GameState {
 	 * Useful to give to controllers so they can play around with the state
 	 * @return
 	 */
-	// TODO consider instead making apply/undo move methods so that we can perform moves without needing a deep copy
 	public GameState deepCopy() {
 		Map<Integer, Player> playersCopy = new HashMap<Integer, Player>();
 		for (Map.Entry<Integer, Player> entry : players.entrySet()) {
@@ -41,5 +40,29 @@ public class GameState {
 	
 	public Player getPlayer(int playerId) {
 		return players.get(playerId);
+	}
+	
+	/**
+	 * Apply a move to the game state
+	 * @param playerId
+	 * @param move
+	 */
+	public void applyMove(int playerId, Move move) {
+		board.applyMove(move);
+		players.get(playerId).getMoveHistory().add(move);
+		players.get(playerId).removePiece(move.getPiece().getName());
+	}
+	
+	/**
+	 * Pop playerId's most recent move off the game state.
+	 * Helpful for controllers that want to experiment with moves without using a copy
+	 * @param playerId
+	 */
+	public void undoLastMove(int playerId) {
+		List<Move> moveHistory = players.get(playerId).getMoveHistory();
+		Move removed = moveHistory.get(moveHistory.size() - 1);
+		moveHistory.remove(moveHistory.size() - 1);
+		board.removeMove(removed);
+		players.get(playerId).addPiece(removed.getPiece().getName());
 	}
 }
