@@ -57,8 +57,8 @@ public class MinimaxController implements Controller {
 	
 	public Node minimax(GameState state, int depth, int alpha, int beta, boolean isMaximizer) {
 		if (depth == 0) {
-			int player1Score = scorer.calculateScore(state.getPlayer(myPlayerId).getMoveHistory());
-			int player2Score = scorer.calculateScore(state.getPlayer(opponentPlayerId).getMoveHistory());
+			int player1Score = scorer.calculateScore(state, myPlayerId);
+			int player2Score = scorer.calculateScore(state, opponentPlayerId);
 			int score = player1Score - player2Score;
 			return new Node(state, score);
 		}

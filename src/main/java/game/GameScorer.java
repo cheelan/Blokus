@@ -9,11 +9,16 @@ public class GameScorer {
 	public static final int LAST_PIECE_MONIMO_BONUS = 5;
 	
 	/**
-	 * Given an ordered list of a player's moves, calculate the player's score
-	 * @param moves
+	 * Calculate the given player's score for the given state
+	 * @param state
+	 * @param playerId
 	 * @return
 	 */
-	public int calculateScore(List<Move> moves) {
+	public int calculateScore(GameState state, int playerId) {
+		return calculateScore(state.getPlayer(playerId).getMoveHistory());
+	}
+	
+	private int calculateScore(List<Move> moves) {
 		int score = INITIAL_SCORE;
 		for (Move move : moves) {
 			score += move.getPiece().getValue();

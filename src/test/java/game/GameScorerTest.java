@@ -1,6 +1,7 @@
 package game;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +14,15 @@ import game.Piece.PieceFactory;
 
 public class GameScorerTest {
 
+	private GameState state;
+	private Player player1;
 	private GameScorer scorer;
 	
 	@Before
 	public void init() {
+		state = mock(GameState.class);
+		player1 = mock(Player.class);
+		when(state.getPlayer(1)).thenReturn(player1);
 		scorer = new GameScorer();
 	}
 	
@@ -26,7 +32,8 @@ public class GameScorerTest {
 		moveHistory.add(new Move(PieceFactory.createPiece(Name.I4, 1), 0, 0));
 		moveHistory.add(new Move(PieceFactory.createPiece(Name.F, 1), 0, 0));
 		moveHistory.add(new Move(PieceFactory.createPiece(Name.V3, 1), 0, 0));
-		assertEquals(12 + GameScorer.INITIAL_SCORE, scorer.calculateScore(moveHistory));
+		when(player1.getMoveHistory()).thenReturn(moveHistory);
+		assertEquals(12 + GameScorer.INITIAL_SCORE, scorer.calculateScore(state, 1));
 	}
 	
 	@Test
@@ -36,7 +43,8 @@ public class GameScorerTest {
 		for (int i = 0; i < Piece.Name.values().length; i++) {
 			moveHistory.add(move);
 		}
-		assertEquals(GameScorer.ALL_PIECES_USED_BONUS + GameScorer.INITIAL_SCORE, scorer.calculateScore(moveHistory));
+		when(player1.getMoveHistory()).thenReturn(moveHistory);
+		assertEquals(GameScorer.ALL_PIECES_USED_BONUS + GameScorer.INITIAL_SCORE, scorer.calculateScore(state, 1));
 	}
 	
 	@Test
@@ -46,8 +54,9 @@ public class GameScorerTest {
 		for (int i = 0; i < Piece.Name.values().length; i++) {
 			moveHistory.add(move);
 		}
+		when(player1.getMoveHistory()).thenReturn(moveHistory);
 		assertEquals(moveHistory.size() + GameScorer.ALL_PIECES_USED_BONUS 
 				                        + GameScorer.LAST_PIECE_MONIMO_BONUS 
-				                        + GameScorer.INITIAL_SCORE, scorer.calculateScore(moveHistory));
+				                        + GameScorer.INITIAL_SCORE, scorer.calculateScore(state, 1));
 	}
 }
