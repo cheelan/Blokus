@@ -13,7 +13,7 @@ public class GreedyController implements Controller {
 
 	@Override
 	public Move decide(GameState state, int playerId) {
-		List<Move> moves = moveGenerator.findAllValidMoves(state.getBoard(), state.getPlayer(playerId).getPieces().values());
+		List<Move> moves = moveGenerator.findAllValidMoves(state, playerId);
 		if (moves.size() == 0) {
 			return null;
 		}

@@ -64,7 +64,7 @@ public class MinimaxController implements Controller {
 		}
 		// Might be able to optimize without deep copy: http://gamedev.stackexchange.com/questions/79879/how-to-calculate-move-while-avoiding-deep-copy?rq=1
 		if (isMaximizer) {
-			List<Move> moves = moveGenerator.findAllValidMoves(state.getBoard(), state.getPlayer(myPlayerId).getPieces().values());
+			List<Move> moves = moveGenerator.findAllValidMoves(state, myPlayerId);
 			// Optimization: Alpha beta pruning is more effective when stronger moves are considered first. 
 			// As a heuristic, it's better to move bigger pieces first
 			Collections.sort(moves, new MoveComparator());
@@ -100,7 +100,7 @@ public class MinimaxController implements Controller {
 			}
 			return bestState;
 		} else {
-			List<Move> moves = moveGenerator.findAllValidMoves(state.getBoard(), state.getPlayer(opponentPlayerId).getPieces().values());
+			List<Move> moves = moveGenerator.findAllValidMoves(state, opponentPlayerId);
 			// Optimization: Alpha beta pruning is more effective when stronger moves are considered first. 
 			// As a heuristic, it's better to move bigger pieces first
 			Collections.sort(moves, new MoveComparator());
